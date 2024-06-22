@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 class OptionWindow extends JFrame {
@@ -22,7 +23,22 @@ class OptionWindow extends JFrame {
     private JButton storeImageButton = new JButton("Store Image");
     private JButton logTransformationButton = new JButton("LogT");
     private JButton powerLawTransformationButton = new JButton("PowT");
+    private JButton exponentialTransformationButton = new JButton("ExpT");
     private JPanel optionPanel = new JPanel();
+
+    private float inputPrompt(String msg){
+        String inputString = JOptionPane.showInputDialog(msg);
+        float inputFloat = 1f;
+        if(inputString == null) return 1f;
+        else{
+            try{
+                inputFloat = Float.parseFloat(inputString);
+            }catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(null, "Not a number!");
+            }
+        }
+        return inputFloat;
+    }
 
     public OptionWindow() {
 
@@ -71,7 +87,7 @@ class OptionWindow extends JFrame {
         logTransformationButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                TransformationFunctions.logTransformation(EditorFrame.image, 1f, 20f);
+                TransformationFunctions.logTransformation(EditorFrame.image, inputPrompt("Enter the Scaling Factor: "), inputPrompt("Input Upscaling Factor: "));
             }
         });
 
@@ -79,7 +95,15 @@ class OptionWindow extends JFrame {
         powerLawTransformationButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e){
-                TransformationFunctions.powerLawTransformation(EditorFrame.image, 1f, 1.2f);
+                TransformationFunctions.powerLawTransformation(EditorFrame.image, inputPrompt("Enter the Scaling Factor: "), inputPrompt("Enter the Gamma Factor: "));
+            }
+        });
+
+
+        exponentialTransformationButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                TransformationFunctions.exponentialTransformation(EditorFrame.image, inputPrompt("Enter the Scaling Factor: "));
             }
         });
 
@@ -90,6 +114,7 @@ class OptionWindow extends JFrame {
         optionPanel.add(storeImageButton);
         optionPanel.add(logTransformationButton);
         optionPanel.add(powerLawTransformationButton);
+        optionPanel.add(exponentialTransformationButton);
 
         this.add(optionPanel);
         this.pack();

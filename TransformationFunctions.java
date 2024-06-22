@@ -70,6 +70,10 @@ public class TransformationFunctions {
                 int nRed = 255-color.getRed();
                 int nGreen = 255-color.getGreen();
                 int nBlue = 255-color.getBlue();
+                int[] vals = checkBoundary(nRed, nGreen, nBlue);
+                nRed = vals[0];
+                nGreen = vals[1];
+                nBlue = vals[2];
                 Color negaiveColor = new Color(nRed, nGreen, nBlue);
                 image.setRGB(x, y, negaiveColor.getRGB());
             }
@@ -86,6 +90,10 @@ public class TransformationFunctions {
                 int logR = (int)(scalingFactor * Math.log1p(color.getRed() + 1) + upscalingFactor);
                 int logG = (int)(scalingFactor * Math.log1p(color.getGreen() + 1) + upscalingFactor);
                 int logB = (int)(scalingFactor * Math.log1p(color.getBlue() + 1) + upscalingFactor);
+                int[] vals = checkBoundary(logR, logG, logB);
+                logR = vals[0];
+                logG = vals[1];
+                logB = vals[2];
                 image.setRGB(x, y, new Color(logR, logG, logB).getRGB());
             }
         }
@@ -108,6 +116,24 @@ public class TransformationFunctions {
                 if(powR > 255 || powG > 255 || powB > 255) System.out.println(powR + ": " + powG + ": " + powB);
                 image.setRGB(x, y, new Color(powR, powG, powB).getRGB());
             }   
+        }
+        EditorFrame.removePreviousImageFromPanel();
+        EditorFrame.displayImage(image);
+    }
+
+    public static void exponentialTransformation(BufferedImage image, float scalingFactor){
+        for(int y = 0; y<image.getHeight(); y++){
+            for(int x = 0; x<image.getWidth(); x++){
+                Color color = new Color(image.getRGB(x, y));
+                int expR = (int)(scalingFactor * Math.exp(color.getRed()));
+                int expG = (int)(scalingFactor * Math.exp(color.getGreen()));
+                int expB = (int)(scalingFactor * Math.exp(color.getBlue()));
+                int[] vals = checkBoundary(expR, expG, expB);
+                expR = vals[0];
+                expG = vals[1];
+                expB = vals[2];
+                image.setRGB(x, y, new Color(expR, expG, expB).getRGB());
+            }
         }
         EditorFrame.removePreviousImageFromPanel();
         EditorFrame.displayImage(image);
