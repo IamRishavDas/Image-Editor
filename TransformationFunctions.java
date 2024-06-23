@@ -1,5 +1,11 @@
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class TransformationFunctions {
 
@@ -7,12 +13,9 @@ public class TransformationFunctions {
     public static final int minRGB = 0;
 
     private static int[] checkBoundary(int r, int g, int b){
-        if(r < 0) r = minRGB;
-        if(g < 0) g = minRGB;
-        if(b < 0) b = minRGB;
-        if(r > 255) r = maxRGB;
-        if(g > 255) g = maxRGB;
-        if(b > 255) b = maxRGB;
+        if(r < 0) r = minRGB;   if(r > 255) r = maxRGB;
+        if(g < 0) g = minRGB;   if(g > 255) g = maxRGB;
+        if(b < 0) b = minRGB;   if(b > 255) b = maxRGB;
         return new int[]{r, g, b};
     }
 
@@ -67,14 +70,14 @@ public class TransformationFunctions {
         for(int y = 0; y<image.getHeight(); y++){
             for(int x = 0; x<image.getWidth(); x++){
                 Color color = new Color(image.getRGB(x, y));
-                int nRed = 255-color.getRed();
-                int nGreen = 255-color.getGreen();
-                int nBlue = 255-color.getBlue();
-                int[] vals = checkBoundary(nRed, nGreen, nBlue);
-                nRed = vals[0];
-                nGreen = vals[1];
-                nBlue = vals[2];
-                Color negaiveColor = new Color(nRed, nGreen, nBlue);
+                int nR = 255-color.getRed();
+                int nG = 255-color.getGreen();
+                int nB = 255-color.getBlue();
+                int[] vals = checkBoundary(nR, nG, nB);
+                nR = vals[0];
+                nG = vals[1];
+                nB = vals[2];
+                Color negaiveColor = new Color(nR, nG, nB);
                 image.setRGB(x, y, negaiveColor.getRGB());
             }
         }
@@ -140,10 +143,32 @@ public class TransformationFunctions {
         EditorFrame.displayImage(image);
     }
 
-    public static void rotateTheImage(BufferedImage image){
-        System.out.println("TODO: not implemented yet!");
-        return;
+    public static void rotateTheImage(BufferedImage image) {
+        if (image == null) {
+            JOptionPane.showMessageDialog(null, "The canvas is empty!");
+            return;
+        }
+    
+        image = createRotatedImage(image);
+        EditorFrame.removePreviousImageFromPanel();
+        EditorFrame.displayImage(image);
     }
+    
+    private static BufferedImage createRotatedImage(BufferedImage originalImage) {
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
+    
+        BufferedImage rotatedImage = new BufferedImage(width, height, originalImage.getType());
+    
+        Graphics2D g = rotatedImage.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.rotate(Math.toRadians(90), width / 2, height / 2);
+        g.drawImage(originalImage, 0, 0, null);
+        g.dispose();
+    
+        return rotatedImage;
+    }
+    
 
     
 }
