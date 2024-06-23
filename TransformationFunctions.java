@@ -122,6 +122,7 @@ public class TransformationFunctions {
     }
 
     public static void exponentialTransformation(BufferedImage image, float scalingFactor){
+        if(image == null) return;
         for(int y = 0; y<image.getHeight(); y++){
             for(int x = 0; x<image.getWidth(); x++){
                 Color color = new Color(image.getRGB(x, y));
@@ -137,5 +138,15 @@ public class TransformationFunctions {
         }
         EditorFrame.removePreviousImageFromPanel();
         EditorFrame.displayImage(image);
+    }
+
+    public static void rotateTheImage(BufferedImage image){
+        System.out.println("TODO: not implemented yet!");
+        return;
+        // for(int y = 0; y<image.getHeight(); y++){
+        //     for(int x = 0; x<image.getWidth(); x++){
+                
+        //     }
+        // }
     }
 }

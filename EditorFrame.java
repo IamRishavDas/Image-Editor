@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,7 @@ class OptionWindow extends JFrame {
     private JButton logTransformationButton = new JButton("LogT");
     private JButton powerLawTransformationButton = new JButton("PowT");
     private JButton exponentialTransformationButton = new JButton("ExpT");
+    private JButton rotateImageButton = new JButton("Rotate90");
     private JPanel optionPanel = new JPanel();
 
     private float inputPrompt(String msg){
@@ -106,6 +108,14 @@ class OptionWindow extends JFrame {
                 TransformationFunctions.exponentialTransformation(EditorFrame.image, inputPrompt("Enter the Scaling Factor: "));
             }
         });
+        
+
+        rotateImageButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                TransformationFunctions.rotateTheImage(EditorFrame.image);
+            }
+        });
 
         optionPanel.add(clearWindowButton);
         optionPanel.add(grayScaleButton);
@@ -115,6 +125,7 @@ class OptionWindow extends JFrame {
         optionPanel.add(logTransformationButton);
         optionPanel.add(powerLawTransformationButton);
         optionPanel.add(exponentialTransformationButton);
+        optionPanel.add(rotateImageButton);
 
         this.add(optionPanel);
         this.pack();
@@ -124,13 +135,15 @@ class OptionWindow extends JFrame {
 }
 
 public class EditorFrame {
+
     private static JPanel panel;
-    private JButton openImageButton;
-    private JButton optionButton;
-    private JButton saveButton;
     private static JFrame frame;
     private static JLabel label;
     static BufferedImage image;
+
+    private JButton openImageButton;
+    private JButton optionButton;
+    private JButton saveButton;
 
     public static void displayImage(BufferedImage img) {
         if(img == null) return;
@@ -160,6 +173,8 @@ public class EditorFrame {
         if(EditorFrame.label == null) return;
         JLabel component = EditorFrame.label;
         panel.remove(component);
+        EditorFrame.label = null;
+        EditorFrame.image = null;
         panel.revalidate();
         panel.repaint();
     }
@@ -201,22 +216,55 @@ public class EditorFrame {
 
         });
 
+
         saveButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
+                if(EditorFrame.image == null || EditorFrame.label == null) return;
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("Save Image");
                 int userSelection = fileChooser.showSaveDialog(null);
-
+        
                 if (userSelection == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        File fileToSave = fileChooser.getSelectedFile();
-                        ImageIO.write(image, "png", fileToSave);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                    JLabel label = EditorFrame.label;
+        
+                    if (label.getIcon() != null) {
+                        try {
+                            Image image;
+                            if (label.getIcon() instanceof ImageIcon) {
+                                image = ((ImageIcon) label.getIcon()).getImage();
+                            } else {
+                                throw new UnsupportedOperationException("Unsupported image format in label");
+                            }
+        
+                            BufferedImage bufferedImage;
+                            if (!(image instanceof BufferedImage)) {
+                                bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+                                Graphics2D g2 = bufferedImage.createGraphics();
+                                g2.drawImage(image, 0, 0, null);
+                                g2.dispose();
+                            } else {
+                                bufferedImage = (BufferedImage) image;
+                            }
+        
+                            File fileToSave = fileChooser.getSelectedFile();
+                            ImageIO.write(bufferedImage, "png", fileToSave);
+        
+                            label.setText("Image saved successfully!");
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Error saving image: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        } catch (UnsupportedOperationException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Image format in label not yet supported", "Unsupported Image", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "No image found in the label to save", "No Image", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             }
         });
+        
 
         frame = new JFrame("suggest a good name for the title!");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
