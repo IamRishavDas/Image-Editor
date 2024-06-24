@@ -222,7 +222,7 @@ public class TransformationFunctions {
         return false;
     }
 
-    public static void thresholdingImage(BufferedImage image, Color colorToRemove, Color colorToPut) {
+    public static void replaceTheColor(BufferedImage image, Color colorToRemove, Color colorToPut) {
         if (image == null || colorToPut == null || colorToRemove == null)
             return;
         System.out.println("Color to remove: " + colorToRemove + " Color to put: " + colorToPut);

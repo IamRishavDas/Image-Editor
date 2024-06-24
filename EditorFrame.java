@@ -168,7 +168,7 @@ class OptionWindow extends JFrame {
         removeColorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TransformationFunctions.thresholdingImage(EditorFrame.image,
+                TransformationFunctions.replaceTheColor(EditorFrame.image,
                         getRGB("Enter the color to remove(like: r:56 g:47 b:89): "),
                         getRGB("Enter the color to put in replace: "));
             }
