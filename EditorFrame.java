@@ -32,9 +32,9 @@ class OptionWindow extends JFrame {
 
     private float inputPrompt(String msg) {
         String inputString = JOptionPane.showInputDialog(msg);
-        float inputFloat = 1f;
+        float inputFloat = -1f;
         if (inputString == null)
-        return 1f;
+            return -1f;
         else {
             try {
                 inputFloat = Float.parseFloat(inputString);
@@ -44,22 +44,23 @@ class OptionWindow extends JFrame {
         }
         return inputFloat;
     }
-    
-    private Color getRGB(String msg){
+
+    private Color getRGB(String msg) {
         int[] RGB = new int[3];
         int k = 0;
         String inputString = JOptionPane.showInputDialog(msg);
         inputString = inputString + " "; // in order to facilitate the RGB parsing
         String temp = new String("");
-        for(int i=0; i<inputString.length(); i++){
-            if(inputString.charAt(i) == ' '){
-                if(k == 3){
+        for (int i = 0; i < inputString.length(); i++) {
+            if (inputString.charAt(i) == ' ') {
+                if (k == 3) {
                     JOptionPane.showMessageDialog(null, "Invalid RGB!");
                     return null;
                 }
-               int number = Integer.parseInt(temp);
-               if(number > 255 || number < 0) return null;
-               RGB[k++] = number;
+                int number = Integer.parseInt(temp);
+                if (number > 255 || number < 0)
+                    return null;
+                RGB[k++] = number;
                 temp = "";
             } else {
                 temp += inputString.charAt(i);
@@ -68,10 +69,11 @@ class OptionWindow extends JFrame {
         return new Color(RGB[0], RGB[1], RGB[2]);
     }
 
-    //singleton instance 
+    // singleton instance
     private static OptionWindow optionWindowInstance;
-    public static OptionWindow getOptionWindow(){
-        if(optionWindowInstance == null){
+
+    public static OptionWindow getOptionWindow() {
+        if (optionWindowInstance == null) {
             optionWindowInstance = new OptionWindow();
         }
         return optionWindowInstance;
@@ -120,38 +122,55 @@ class OptionWindow extends JFrame {
         logTransformationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TransformationFunctions.logTransformation(EditorFrame.image, inputPrompt("Enter the Scaling Factor: "),
-                        inputPrompt("Input Upscaling Factor: "));
+                float scalingFactor = inputPrompt("Enter the Scaling Factor: ");
+                if (scalingFactor < 0f)
+                    return;
+                float upscalingFactor = inputPrompt("Input Upscaling Factor: ");
+                if (upscalingFactor < 0f)
+                    return;
+                TransformationFunctions.logTransformation(EditorFrame.image, scalingFactor, upscalingFactor);
             }
         });
 
         powerLawTransformationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TransformationFunctions.powerLawTransformation(EditorFrame.image,
-                        inputPrompt("Enter the Scaling Factor: "), inputPrompt("Enter the Gamma Factor: "));
+                float scalingFactor = inputPrompt("Enter the Scaling Factor: ");
+                if (scalingFactor < 0f)
+                    return;
+                float gammaFactor = inputPrompt("Enter the Gamma Factor: ");
+                if (gammaFactor < 0f)
+                    return;
+                TransformationFunctions.powerLawTransformation(EditorFrame.image, scalingFactor, gammaFactor);
             }
         });
 
         exponentialTransformationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                float scalingFactor = inputPrompt("Enter the Scaling Factor: ");
+                if (scalingFactor < 0f)
+                    return;
                 TransformationFunctions.exponentialTransformation(EditorFrame.image,
-                        inputPrompt("Enter the Scaling Factor: "));
+                        scalingFactor);
             }
         });
 
         rotateImageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TransformationFunctions.rotateTheImage(EditorFrame.image, inputPrompt("Enter the rotation angle in degree(respect to the original pos): "));
+                double angle = inputPrompt("Enter the rotation angle in degree(respect to the original pos): ");
+                TransformationFunctions.rotateTheImage(EditorFrame.image,
+                        angle);
             }
         });
 
         removeColorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TransformationFunctions.thresholdingImage(EditorFrame.image, getRGB("Enter the color to remove(like: 56, 47, 89)"), getRGB("Enter the color to put in replace: "));
+                TransformationFunctions.thresholdingImage(EditorFrame.image,
+                        getRGB("Enter the color to remove(like: r:56 g:47 b:89): "),
+                        getRGB("Enter the color to put in replace: "));
             }
         });
 
@@ -210,7 +229,7 @@ public class EditorFrame {
     }
 
     public static void removePreviousImageFromPanel() {
-        if (EditorFrame.label == null){
+        if (EditorFrame.label == null) {
             System.out.println("EdittorFrame.JLabel is null!");
             return;
         }
