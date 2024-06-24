@@ -27,7 +27,7 @@ class OptionWindow extends JFrame {
     private JButton powerLawTransformationButton = new JButton("PowT");
     private JButton exponentialTransformationButton = new JButton("ExpT");
     private JButton rotateImageButton = new JButton("Rotate");
-    private JButton removeColorButton = new JButton("Remove");
+    private JButton removeColorButton = new JButton("ChangeColor");
     private JPanel optionPanel = new JPanel();
 
     private float inputPrompt(String msg) {

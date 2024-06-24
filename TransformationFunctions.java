@@ -191,28 +191,28 @@ public class TransformationFunctions {
         }
 
         // spatial domain for closer range for finding closer tone alpha 
-        // var closerToneRed = new int[]{15, 40, 60};
-        // var closerToneGreen = new int[]{40, 15, 60};
-        // var closerToneBlue = new int[]{60, 40, 15};
+        var closerToneRed = new int[]{10, 20, 30};
+        var closerToneGreen = new int[]{30, 10, 30};
+        var closerToneBlue = new int[]{30, 40, 15};
 
-        var closerToneRed = new int[]{100, 100, 100};
-        var closerToneGreen = new int[]{100, 100, 100};
-        var closerToneBlue = new int[]{100, 100, 100};
+        // var closerToneRed = new int[]{50, 50, 50};
+        // var closerToneGreen = new int[]{50, 50, 50};
+        // var closerToneBlue = new int[]{50, 50, 50};
 
         int[] colorRGB = new int[3];
         colorRGB[0] = color.getRed();
         colorRGB[1] = color.getGreen();
         colorRGB[2] = color.getBlue();
 
-        if(maxIndex == 1){
+        if(maxIndex == 0){
             if((colorRGB[0] >= removeRGB[0] - closerToneRed[0]) && (colorRGB[0] <= removeRGB[0] + closerToneRed[0])) return true;
             if((colorRGB[1] >= removeRGB[1] - closerToneRed[1]) && (colorRGB[1] <= removeRGB[1] + closerToneRed[1])) return true;
             if((colorRGB[2] >= removeRGB[2] - closerToneRed[2]) && (colorRGB[2] <= removeRGB[2] + closerToneRed[2])) return true;
-        } else if(maxIndex == 2){
+        } else if(maxIndex == 1){
             if((colorRGB[0] >= removeRGB[0] - closerToneGreen[0]) && (colorRGB[0] <= removeRGB[0] + closerToneGreen[0])) return true;
             if((colorRGB[1] >= removeRGB[1] - closerToneGreen[1]) && (colorRGB[1] <= removeRGB[1] + closerToneGreen[1])) return true;
             if((colorRGB[2] >= removeRGB[2] - closerToneGreen[2]) && (colorRGB[2] <= removeRGB[2] + closerToneGreen[2])) return true;
-        } else if(maxIndex == 3){
+        } else if(maxIndex == 2){
             if((colorRGB[0] >= removeRGB[0] - closerToneBlue[0]) && (colorRGB[0] <= removeRGB[0] + closerToneBlue[0])) return true;
             if((colorRGB[1] >= removeRGB[1] - closerToneBlue[1]) && (colorRGB[1] <= removeRGB[1] + closerToneBlue[1])) return true;
             if((colorRGB[2] >= removeRGB[2] - closerToneBlue[2]) && (colorRGB[2] <= removeRGB[2] + closerToneBlue[2])) return true;
