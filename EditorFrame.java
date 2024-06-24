@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -25,14 +26,15 @@ class OptionWindow extends JFrame {
     private JButton logTransformationButton = new JButton("LogT");
     private JButton powerLawTransformationButton = new JButton("PowT");
     private JButton exponentialTransformationButton = new JButton("ExpT");
-    private JButton rotateImageButton = new JButton("Rotate90");
+    private JButton rotateImageButton = new JButton("Rotate");
+    private JButton removeColorButton = new JButton("Remove");
     private JPanel optionPanel = new JPanel();
 
     private float inputPrompt(String msg) {
         String inputString = JOptionPane.showInputDialog(msg);
         float inputFloat = 1f;
         if (inputString == null)
-            return 1f;
+        return 1f;
         else {
             try {
                 inputFloat = Float.parseFloat(inputString);
@@ -41,6 +43,29 @@ class OptionWindow extends JFrame {
             }
         }
         return inputFloat;
+    }
+    
+    private Color getRGB(String msg){
+        int[] RGB = new int[3];
+        int k = 0;
+        String inputString = JOptionPane.showInputDialog(msg);
+        inputString = inputString + " "; // in order to facilitate the RGB parsing
+        String temp = new String("");
+        for(int i=0; i<inputString.length(); i++){
+            if(inputString.charAt(i) == ' '){
+                if(k == 3){
+                    JOptionPane.showMessageDialog(null, "Invalid RGB!");
+                    return null;
+                }
+               int number = Integer.parseInt(temp);
+               if(number > 255 || number < 0) return null;
+               RGB[k++] = number;
+                temp = "";
+            } else {
+                temp += inputString.charAt(i);
+            }
+        }
+        return new Color(RGB[0], RGB[1], RGB[2]);
     }
 
     //singleton instance 
@@ -119,7 +144,14 @@ class OptionWindow extends JFrame {
         rotateImageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TransformationFunctions.rotateTheImage(EditorFrame.image);
+                TransformationFunctions.rotateTheImage(EditorFrame.image, inputPrompt("Enter the rotation angle in degree(respect to the original pos): "));
+            }
+        });
+
+        removeColorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TransformationFunctions.thresholdingImage(EditorFrame.image, getRGB("Enter the color to remove(like: 56, 47, 89)"), getRGB("Enter the color to put in replace: "));
             }
         });
 
@@ -132,6 +164,7 @@ class OptionWindow extends JFrame {
         optionPanel.add(powerLawTransformationButton);
         optionPanel.add(exponentialTransformationButton);
         optionPanel.add(rotateImageButton);
+        optionPanel.add(removeColorButton);
 
         this.add(optionPanel);
         this.pack();
@@ -177,8 +210,10 @@ public class EditorFrame {
     }
 
     public static void removePreviousImageFromPanel() {
-        if (EditorFrame.label == null)
+        if (EditorFrame.label == null){
+            System.out.println("EdittorFrame.JLabel is null!");
             return;
+        }
         JLabel component = EditorFrame.label;
         panel.remove(component);
         panel.revalidate();
@@ -275,7 +310,7 @@ public class EditorFrame {
             }
         });
 
-        frame = new JFrame("suggest a good name for the title!");
+        frame = new JFrame("Just an Image Editor you will hate most");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 700);
         frame.setLocationRelativeTo(null);
