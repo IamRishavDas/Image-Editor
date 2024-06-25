@@ -1,7 +1,9 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -18,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 class OptionWindow extends JFrame {
+
     private JButton clearWindowButton = new JButton("Clear");
     private JButton grayScaleButton = new JButton("Black&White");
     private JButton negativeButton = new JButton("Negative");
@@ -93,6 +96,7 @@ class OptionWindow extends JFrame {
 
     private OptionWindow() {
 
+        this.setTitle("Options");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
@@ -202,6 +206,8 @@ class OptionWindow extends JFrame {
             }
         });
 
+        optionPanel.setLayout(new GridLayout(4, 2));
+
         optionPanel.add(clearWindowButton);
         optionPanel.add(grayScaleButton);
         optionPanel.add(negativeButton);
@@ -217,7 +223,8 @@ class OptionWindow extends JFrame {
 
         this.add(optionPanel);
         this.pack();
-        this.setResizable(false);
+        this.setResizable(true);
+        this.setMaximizedBounds(new Rectangle(new Dimension(400, 200)));
         this.setVisible(true);
     }
 }
@@ -359,7 +366,7 @@ public class EditorFrame {
             }
         });
 
-        frame = new JFrame("Just an Image Editor you will hate most");
+        frame = new JFrame("J-Editor");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 700);
         frame.setLocationRelativeTo(null);
