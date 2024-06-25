@@ -24,7 +24,6 @@ public class TransformationFunctions {
     }
 
     static int[][] imageArray;
-
     public static void storeCurrentImageState(BufferedImage image) {
         if (image == null)
             return;
@@ -191,9 +190,9 @@ public class TransformationFunctions {
         }
 
         // spatial domain for closer range for finding closer tone alpha 
-        var closerToneRed = new int[]{10, 20, 30};
-        var closerToneGreen = new int[]{30, 10, 30};
-        var closerToneBlue = new int[]{30, 40, 15};
+        var closerToneRed = new int[]{6, 10, 30};
+        var closerToneGreen = new int[]{10, 6, 30};
+        var closerToneBlue = new int[]{30, 10, 6};
 
         // var closerToneRed = new int[]{50, 50, 50};
         // var closerToneGreen = new int[]{50, 50, 50};
@@ -232,6 +231,59 @@ public class TransformationFunctions {
                 if (color.equals(colorToRemove) || isCloseColor(color, colorToRemove)) {
                     image.setRGB(x, y, colorToPut.getRGB());
                 }
+            }
+        }
+        EditorFrame.removePreviousImageFromPanel();
+        EditorFrame.displayImage(image);
+    }
+
+    public static void scalingPos(BufferedImage image, float delX, float delY){
+        if(delX < 0 || delX > 255) return;
+        if(delY < 0 || delY > 255) return;
+
+        for(int y = 0; y<image.getHeight(); y++){
+            for(int x = 0; x<image.getWidth(); x++){
+                int newX = (int)(x * delX);
+                int newY = (int)(y * delY);
+
+                try{
+                    if(newX < 0 || newY < 0) continue;
+                    else if(newX >= image.getWidth()  || newY >= image.getHeight()) continue;
+                    else if(newX >= image.getHeight() || newY >= image.getWidth())  continue;
+                    else image.setRGB(x, y, image.getRGB(newX, newY));
+                }catch(ArrayIndexOutOfBoundsException ex){
+                    System.out.println("Coordinate out of bounds Exception: ");
+                    System.out.println("x: " + x + " y: " + y + " newX: " + newX + " newY: " + newY);
+                }
+            }
+        }
+        EditorFrame.removePreviousImageFromPanel();
+        EditorFrame.displayImage(image);
+    }
+
+    public static void shiftRGB(BufferedImage image, Color shiftingColorValues, boolean isPositiveShift){
+
+        if(image == null || shiftingColorValues == null) return;
+
+        int factor = 1;
+        if(isPositiveShift) factor = 1;
+        else factor = -1;
+
+        for(int y = 0; y<image.getHeight(); y++){
+            for(int x = 0; x<image.getWidth(); x++){
+
+                Color color = new Color(image.getRGB(x, y));
+                int shiftRed = color.getRed() + factor * shiftingColorValues.getRed();
+                int shiftGreen = color.getGreen() + factor * shiftingColorValues.getGreen();
+                int shiftBlue = color.getBlue() + factor * shiftingColorValues.getBlue();
+
+                int vals[] = checkBoundary(shiftRed, shiftGreen, shiftBlue);
+                
+                shiftRed = vals[0];
+                shiftGreen = vals[1];
+                shiftBlue = vals[2];
+
+                image.setRGB(x, y, new Color(shiftRed, shiftGreen, shiftBlue).getRGB());
             }
         }
         EditorFrame.removePreviousImageFromPanel();

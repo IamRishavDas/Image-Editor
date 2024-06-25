@@ -28,6 +28,8 @@ class OptionWindow extends JFrame {
     private JButton exponentialTransformationButton = new JButton("ExpT");
     private JButton rotateImageButton = new JButton("Rotate");
     private JButton removeColorButton = new JButton("ChangeColor");
+    private JButton scalingButton = new JButton("Scale");
+    private JButton shiftButton = new JButton("Shift");
     private JPanel optionPanel = new JPanel();
 
     private float inputPrompt(String msg) {
@@ -49,7 +51,7 @@ class OptionWindow extends JFrame {
         int[] RGB = new int[3];
         int k = 0;
         String inputString = JOptionPane.showInputDialog(msg);
-        inputString = inputString + " "; // in order to facilitate the RGB parsing
+        inputString = inputString + " "; 
         String temp = new String("");
         for (int i = 0; i < inputString.length(); i++) {
             if (inputString.charAt(i) == ' ') {
@@ -67,6 +69,16 @@ class OptionWindow extends JFrame {
             }
         }
         return new Color(RGB[0], RGB[1], RGB[2]);
+    }
+
+    private static boolean isPositiveShift(){
+        String input = JOptionPane.showInputDialog(null, "Enter the +ve or -ve shift(+ or -): ");
+        if(input == null || input.equals("")) return true;
+        for(char c: input.toCharArray()){
+            if(c == '+') return true;
+            if(c == '-') return false;
+        }
+        return true;
     }
 
     // singleton instance
@@ -174,6 +186,22 @@ class OptionWindow extends JFrame {
             }
         });
 
+        scalingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                float delX = inputPrompt("Enter the scale X: ");
+                float delY = inputPrompt("Enter the scale Y: ");
+                TransformationFunctions.scalingPos(EditorFrame.image, delX, delY);
+            }
+        });
+
+        shiftButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TransformationFunctions.shiftRGB(EditorFrame.image, getRGB("Enter the shift RGB: "), isPositiveShift());
+            }
+        });
+
         optionPanel.add(clearWindowButton);
         optionPanel.add(grayScaleButton);
         optionPanel.add(negativeButton);
@@ -184,6 +212,8 @@ class OptionWindow extends JFrame {
         optionPanel.add(exponentialTransformationButton);
         optionPanel.add(rotateImageButton);
         optionPanel.add(removeColorButton);
+        optionPanel.add(scalingButton);
+        optionPanel.add(shiftButton);
 
         this.add(optionPanel);
         this.pack();
