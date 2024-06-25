@@ -36,8 +36,9 @@ class OptionWindow extends JFrame {
     private JPanel optionPanel = new JPanel();
 
     private float inputPrompt(String msg) {
-        String inputString = JOptionPane.showInputDialog(msg);
         float inputFloat = -1f;
+        if(EditorFrame.image == null) return inputFloat; 
+        String inputString = JOptionPane.showInputDialog(msg);
         if (inputString == null)
             return -1f;
         else {
@@ -51,6 +52,7 @@ class OptionWindow extends JFrame {
     }
 
     private Color getRGB(String msg) {
+        if(EditorFrame.image == null) return null;
         int[] RGB = new int[3];
         int k = 0;
         String inputString = JOptionPane.showInputDialog(msg);
@@ -75,6 +77,7 @@ class OptionWindow extends JFrame {
     }
 
     private static boolean isPositiveShift(){
+        if(EditorFrame.image == null) return true;
         String input = JOptionPane.showInputDialog(null, "Enter the +ve or -ve shift(+ or -): ");
         if(input == null || input.equals("")) return true;
         for(char c: input.toCharArray()){
@@ -206,7 +209,7 @@ class OptionWindow extends JFrame {
             }
         });
 
-        optionPanel.setLayout(new GridLayout(4, 2));
+        optionPanel.setLayout(new GridLayout(4, 2, 2, 1));
 
         optionPanel.add(clearWindowButton);
         optionPanel.add(grayScaleButton);
